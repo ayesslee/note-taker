@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // create route for the files in the public folder
-app.use(express.static('public'));
+app.use(express.static('./public'));
 
 // middleware
 app.use(express.urlencoded({ extended: true }));
@@ -19,6 +19,6 @@ require('./routes/apiRoutes')(app);
 require('./routes/htmlRoutes')(app);
 
 // starts the server
-app.listen(PORT, () => {
-    console.log(`Server started at localhost${PORT}`);
-});
+app.listen(PORT, () => 
+    console.log(`Server started at localhost:${PORT}`)
+);
