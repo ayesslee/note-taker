@@ -2,7 +2,7 @@
 
 ## Description
 
-This app allows the user to write notes and save/delete them. 
+This app allows the user to write notes and save them. 
 
 ## User Story
 ```
@@ -35,6 +35,7 @@ THEN I am presented with empty fields to enter a new note title and the note’s
 
 Simply click on the link above to start taking notes!
 
-## Screenshot
+## Demo
 
-![image of app](./images/T9QLVkj.png)
+![landing page](./public/assets/images/landpage.png)
+![screenshot of application](./public/assets/images/app.png)

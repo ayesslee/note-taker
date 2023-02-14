@@ -1,44 +1,44 @@
 // dependencies
-const path = require('path');
-const fs = require('fs');
+const router = require("express").Router();
+const uuid = require("../helpers/uuid");
+
+const {
+  readFromFile,
+  readAndAppend,
+} = require("../helpers/fsUtils");
 
 
+// get route for notes
+router.get("/notes", (req, res) => {
+  readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)))
+  }
+);
+// post route for notes
+router.post("/notes", (req, res) => {
+  // receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 
-module.exports = (app) => {
-    // GET notes should read the db.json file and return all saved notes as JSON
-    app.get('/api/notes', (req, res) => {
-        res.sendFile(path.join(__dirname, '../db/db.json'));
-    });
+  // destructuring for the items in the req.body
+  const { title, text } = req.body;
+// for the object to be saved
+  if (title && text) {
+    const newNote = {
+      title,
+      text,
+      id: uuid(),
+    };
 
-    app.get('/api/notes/:id'), (req, res) => {
-        let olderNotes = JSON.parse(fs.readFileSync('../db/db.json', 'utf-8'));
-        res.json(olderNotes[Number(req.params.id)]);
-    }
+    readAndAppend(newNote, "./db/db.json");
 
-    // POST notes will receive a new note to save on request body and add it to the db.json file
-    app.post('api/notes', (req, res) => {
-        let db = fs.readFileSync('db/db.json');
-        let olderNotes = JSON.parse(fs.readFileSync('./db/db.json', 'utf-8'));
-        let newerNote = {
-            title: req.body.title,
-            text: req.body.text,
-            id: uniqueId(),
-        };
-        let unique = (olderNotes.length).toString();
-       newerNote.id = uniqueNote;
-       olderNotes.push(newerNote);
-       fs.writeFileSync('./db/db.json', JSON.stringify(olderNotes));
-       console.log('Data saved to db.json file: ', newerNote);
-       res.json(olderNotes);
-    });
+    const response = {
+      status: "success",
+      body: newNote,
+    };
+
+    res.json(response);
+  } else {
+    res.json("Error: Title and Text fields are required");
+  }
+});
 
 
-    // delete notes should receive query containing id of the note to delete
-    app.delete('api/notes/:id', (req, res) => {
-        let db = JSON.parse(fs.readFileSync('./db/db.json', 'utf-8'));
-        let deleteNotes = db.filter(item => item.id !== req.params.id);
-        fs.writeFileSync('db/db.json', JSON.stringify(deleteNotes));
-        res.json(deleteNotes);
-
-    })
-};
+module.exports = router;

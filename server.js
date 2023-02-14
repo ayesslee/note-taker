@@ -1,24 +1,19 @@
 // dependencies
-const express = require('express');
+const express = require("express");
+const api = require("./routes/apiRoutes");
+const pages = require("./routes/pageRoutes");
 
-// app uses express
 const app = express();
-
-// creates port for environment
 const PORT = process.env.PORT || 3001;
 
-// create route for the files in the public folder
-app.use(express.static('./public'));
-
-// middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static("public"));
 
-// grab route files
-require('./routes/apiRoutes')(app);
-require('./routes/htmlRoutes')(app);
+// api routes need to be defined before html routes so that the wildcard '*' doesn't catch everything improperly, thanks Samantha
+app.use("/api", api);
+app.use("/", pages);
 
-// starts the server
-app.listen(PORT, () => 
-    console.log(`Server started at localhost:${PORT}`)
+app.listen(PORT, () =>
+  console.log(`App listening at http://localhost:${PORT} 🚀`)
 );
